@@ -1,0 +1,48 @@
+server:
+  hostname: server-local
+  port: 8097
+
+# Application Log Properties
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{1.} %thread %msg%n"
+  level:
+    root: INFO
+    br.com.example.spring.config: INFO
+    br.com.example.spring: DEBUG
+
+# Spring OpenAPI Properties
+springdoc:
+  api-docs:
+    path: /api-docs
+  packagesToScan: br.com.spring_api.controller
+  pathsToMatch: /api/**
+
+spring:
+  application:
+    name: spring
+    security:
+      jwt:
+        secret-key: 1412C28EFE5E236DA160A091CF5698378DB491DF1D48746E308CA4B3FBCA9A94
+        expirationInMs: 2700000       # 45 minutes
+        refreshExpirationInMs: 172800000 # 48 hours
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    properties.hibernate.show_sql: true
+    properties.hibernate.format_sql: true
+    hibernate:
+      ddl-auto: create
+
+  datasource:
+    url: jdbc:h2:mem:springdb
+    username: sa
+    password:
+    driverClassName: org.h2.Driver
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+      settings.trace: false
+      settings.web-allow-others: false

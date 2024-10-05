@@ -1,36 +1,29 @@
 package com.example.spring.security.config;
 
-import lombok.RequiredArgsConstructor;
+import jakarta.servlet.annotation.WebServlet;
+import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfiguration {
 
-    //private final JwtAuthenticationFilter jwtAuthFilter;
-    //private final AuthenticationProvider authenticationProvider;
-
-    @Bean
-    @Profile("local")
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return web -> web.ignoring().requestMatchers(new AntPathRequestMatcher("/h2-console/**"));
-    }
+    private final JwtAuthenticationFilter jwtAuthFilter;
+    private final AuthenticationProvider authenticationProvider;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()
-                )
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorizeHttpRequests ->
                         authorizeHttpRequests
                                 .requestMatchers(
@@ -46,16 +39,18 @@ public class SecurityConfiguration {
                                         "/api-docs/swagger-config",
                                         "/api-docs",
                                         "/api-docs/**",
+                                        "/h2-console/**",
                                         "/api/help/v1/**",
                                         "/api/example/**"
                                 )
-
                                 .permitAll()
                                 .anyRequest()
                                 .authenticated()
-                );
-                //.authenticationProvider(authenticationProvider)
-                //.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                )
+                .authenticationProvider(authenticationProvider)
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .headers(headers -> headers.contentSecurityPolicy(csp -> csp
+                        .policyDirectives("default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';")));
 
         return http.build();
     }

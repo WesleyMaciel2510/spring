@@ -8,20 +8,20 @@ import jakarta.persistence.Converter;
 public class DocumentTypeEnumConverter implements AttributeConverter<DocumentTypeEnum, String> {
 
     @Override
-    public String convertToDatabaseColumn(DocumentTypeEnum attribute) {
-        if (attribute == null) {
-            return null;
-        }
-
-        return attribute.getCode();
-    }
-
-    @Override
     public DocumentTypeEnum convertToEntityAttribute(String dbData) {
         if (dbData == null) {
             return null;
         }
 
         return DocumentTypeEnum.fromCode(dbData);
+    }
+
+    @Override
+    public String convertToDatabaseColumn(DocumentTypeEnum attribute) {
+        if (attribute == null) {
+            return null;
+        }
+
+        return attribute.getCode();
     }
 }

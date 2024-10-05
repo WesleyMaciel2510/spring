@@ -22,7 +22,7 @@ import org.springframework.context.annotation.Profile;
         servers = {
                 @Server(
                         description = "Local ENV",
-                        url = "http://localhost:8080"
+                        url = "http://localhost:8097"
                 )
         },
         security = {
