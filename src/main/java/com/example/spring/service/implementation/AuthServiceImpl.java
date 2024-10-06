@@ -9,11 +9,11 @@ import com.example.spring.model.requests.AuthenticationRequest;
 import com.example.spring.model.requests.ResetPasswordRequest;
 import com.example.spring.model.response.AuthenticationResponse;
 import com.example.spring.model.response.AuthLoginResponse;
-import com.example.spring.repository.UsuarioRepository;
+import com.example.spring.repository.AppUserRepository;
 import com.example.spring.service.AuthService;
 import com.example.spring.service.JwtService;
 import com.example.spring.service.RefreshTokenService;
-import com.example.spring.util.Translate;
+import com.example.spring.util.Base64Converter;
 import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -31,7 +31,7 @@ public class AuthServiceImpl implements AuthService {
 
     private final PasswordEncoder passwordEncoder;
 
-    private final UsuarioRepository usuarioRepository;
+    private final AppUserRepository appUserRepository;
 
     private final JwtService jwtService;
 
@@ -43,20 +43,17 @@ public class AuthServiceImpl implements AuthService {
     public AuthenticationResponse authenticate(AuthenticationRequest request, Usuario user) {
         authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
-
         var jwtToken = jwtService.generateToken(user);
-
         return AuthenticationResponse.builder().token(jwtToken).build();
     }
 
     @Override
     public AuthLoginResponse login(AuthenticationRequest request) {
-
         if (StringUtils.isBlank(request.getUsername()) || StringUtils.isBlank(request.getPassword())) {
             throw new BadRequestException("Usuário ou senha não informado.");
         }
 
-        Usuario user = usuarioRepository.findByUsername(request.getUsername())
+        Usuario user = appUserRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new NotFoundException("Usuário não encontrado."));
 
         String jwtToken = authenticate(request, user).getToken();
@@ -73,7 +70,7 @@ public class AuthServiceImpl implements AuthService {
 
     public AuthLoginResponse generateToken(String username) {
 
-        Usuario user = usuarioRepository.findByUsername(username)
+        Usuario user = appUserRepository.findByUsername(username)
                 .orElseThrow(() -> new NotFoundException("Usuário não encontrado."));
 
         String jwtToken = jwtService.generateToken(user);
@@ -90,7 +87,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void passwordReset(ResetPasswordRequest request) {
-        Usuario usuario = usuarioRepository.findByUsername(request.getUsername())
+        Usuario usuario = appUserRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new NotFoundException("Usuário não encontrado."));
 
         validatePassword(usuario.getPassword(), request.getStepOne(), request.getStepTwo());
@@ -99,7 +96,7 @@ public class AuthServiceImpl implements AuthService {
 
         usuario.setPassword(newPassword);
 
-        usuarioRepository.save(usuario);
+        appUserRepository.save(usuario);
     }
 
     private void validatePassword(String passOld, String passOne, String passTwo) {
@@ -107,8 +104,8 @@ public class AuthServiceImpl implements AuthService {
             throw new BadRequestException("Valor não informado para nova senha.");
         }
 
-        passOne = Translate.fromBase64(passOne);
-        passTwo = Translate.fromBase64(passTwo);
+        passOne = Base64Converter.fromBase64(passOne);
+        passTwo = Base64Converter.fromBase64(passTwo);
 
         if (!passOne.equals(passTwo)) {
             throw new BusinessException(

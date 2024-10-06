@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDateTime;
 
@@ -18,22 +19,22 @@ import java.time.LocalDateTime;
 public class RefreshToken {
 
     @Id
+    @GeneratedValue
+    @UuidGenerator
     @Column(name = "ID", length = 40)
-    @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")
     private String id;
 
     @OneToOne
-    @JoinColumn(name = "USUARIOID")
+    @JoinColumn(name = "IDUSER")
     private Usuario user;
 
     @Column(name = "TOKEN", nullable = false, unique = true)
     private String token;
 
-    @Column(name = "DATACRIACAO", nullable = false)
+    @Column(name = "CREATEDATE", nullable = false)
     private LocalDateTime createDate;
 
-    @Column(name = "DATAEXPIRACAO", nullable = false)
+    @Column(name = "EXPIRYDATE", nullable = false)
     private LocalDateTime expiryDate;
 
 }

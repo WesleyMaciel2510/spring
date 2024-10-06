@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DocumentRequest {
+public class DocumentCreateRequest {
     private String name;
     private DocumentTypeEnum type;
     private Boolean active;

@@ -14,12 +14,12 @@ import java.io.Serializable;
 public abstract class InfoBase implements Serializable {
 
     @Id
-    @Column(name = "id", columnDefinition = "VARCHAR(40)")
+    @Column(name = "ID", columnDefinition = "VARCHAR(40)")
     @GeneratedValue(generator = "uuid2")
     @UuidGenerator
     private String id;
 
-    @Column(name = "excluido", insertable = false)
+    @Column(name = "DELETED", insertable = false)
     private Boolean deleted;
 
     @Override

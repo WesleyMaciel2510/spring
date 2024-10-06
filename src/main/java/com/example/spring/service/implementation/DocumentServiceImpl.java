@@ -1,7 +1,7 @@
 package com.example.spring.service.implementation;
 
 import com.example.spring.entity.Document;
-import com.example.spring.model.requests.document.DocumentRequest;
+import com.example.spring.model.requests.document.DocumentCreateRequest;
 import com.example.spring.repository.DocumentRepository;
 import com.example.spring.service.DocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,20 +20,20 @@ public class DocumentServiceImpl implements DocumentService {
         return documentRepository.findAll();
     }
 
-    public Optional<Document> findById(Long id) {
+    public Optional<Document> findById(String id) {
         return documentRepository.findById(id);
     }
 
-    public Document save(DocumentRequest documentRequest) {
+    public Document save(DocumentCreateRequest documentCreateRequest) {
         Document document = Document.builder()
-                .name(documentRequest.getName())
-                .type(documentRequest.getType())
-                .active(documentRequest.getActive())
+                .name(documentCreateRequest.getName())
+                .type(documentCreateRequest.getType())
+                .active(documentCreateRequest.getActive())
                 .build();
         return documentRepository.save(document);
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(String id) {
         documentRepository.deleteById(id);
     }
 }

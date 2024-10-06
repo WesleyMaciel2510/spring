@@ -26,20 +26,14 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authorizeHttpRequests ->
                         authorizeHttpRequests
                                 .requestMatchers(
-                                        "/swagger-ui.html",
                                         "/swagger-ui/**",
-                                        "/v3/api-docs",
-                                        "/v3/api-docs/**",
-                                        "/swagger-resources",
-                                        "/swagger-resources/**",
-                                        "/v2/api-docs",
-                                        "/configuration/ui",
-                                        "/configuration/security",
-                                        "/api-docs/swagger-config",
-                                        "/api-docs",
                                         "/api-docs/**",
+                                        "/swagger-resources/**",
                                         "/h2-console/**",
-                                        "/api/help/v1/**",
+                                        "/api/auth/login",
+                                        "/api/auth/refreshToken",
+                                        "/api/auth/password/reset",
+                                        "/api/user/**",
                                         "/api/example/**"
                                 )
                                 .permitAll()

@@ -12,7 +12,9 @@ public interface AuthService {
 
     AuthLoginResponse login(AuthenticationRequest request);
 
+    void passwordReset(ResetPasswordRequest request);
+
     AuthLoginResponse generateToken(String username);
 
-    void passwordReset(ResetPasswordRequest request);
+
 }

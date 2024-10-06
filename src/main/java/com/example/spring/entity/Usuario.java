@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.UuidGenerator;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,9 +24,10 @@ import java.util.List;
 @Table(name = "USUARIO")
 public class Usuario implements UserDetails {
     @Id
-    @Column(name = "USUARIOID", columnDefinition = "VARCHAR(20)")
-    @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(name = "USUARIOID", columnDefinition = "VARCHAR(40)")
+    //@UuidGenerator(style = UuidGenerator.Style.AUTO)
+    @GeneratedValue
+    @UuidGenerator
     private String guid;
 
     @Column(name = "USERNAME")

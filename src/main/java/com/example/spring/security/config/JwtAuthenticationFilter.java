@@ -25,46 +25,53 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
 
-
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
 
         final String authHeader = request.getHeader("Authorization");
-        final String jwt;
-        final String username;
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        if (!hasBearerToken(authHeader)) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        jwt = authHeader.substring(7);
+        final String jwt = extractJwt(authHeader);
 
         try {
-            username = jwtService.extractUsername(jwt);
-        } catch (Exception e) {
-            throw new UnauthorizedException("Não autorizado, token inválido!");
-        }
-
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-            if (jwtService.isTokenValid(jwt, userDetails)) {
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null,
-                        userDetails.getAuthorities()
-                );
-                authToken.setDetails(
-                        new WebAuthenticationDetailsSource().buildDetails(request)
-                );
-                SecurityContextHolder.getContext().setAuthentication(authToken);
-            }
+            final String username = jwtService.extractUsername(jwt);
+            authenticateUser(request, jwt, username);
+        } catch (UnauthorizedException e) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
         }
 
         filterChain.doFilter(request, response);
     }
-}
 
+    private boolean hasBearerToken(String authHeader) {
+        return authHeader != null && authHeader.startsWith("Bearer ");
+    }
+
+    private String extractJwt(String authHeader) {
+        return authHeader.substring(7);
+    }
+
+    private void authenticateUser(HttpServletRequest request, String jwt, String username) {
+        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            if (jwtService.isTokenValid(jwt, userDetails)) {
+                UsernamePasswordAuthenticationToken authToken = createAuthToken(userDetails, request);
+                SecurityContextHolder.getContext().setAuthentication(authToken);
+            }
+        }
+    }
+
+    private UsernamePasswordAuthenticationToken createAuthToken(UserDetails userDetails, HttpServletRequest request) {
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                userDetails, null, userDetails.getAuthorities());
+        authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        return authToken;
+    }
+}
 

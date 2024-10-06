@@ -1,7 +1,7 @@
 package com.example.spring.controller;
 
 import com.example.spring.entity.Document;
-import com.example.spring.model.requests.document.DocumentRequest;
+import com.example.spring.model.requests.document.DocumentCreateRequest;
 import com.example.spring.service.DocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,19 +22,19 @@ public class DocumentController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Document> getDocumentById(@PathVariable Long id) {
+    public ResponseEntity<Document> getDocumentById(@PathVariable String id) {
         return documentService.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public Document createDocument(@RequestBody DocumentRequest documentRequest) {
-        return documentService.save(documentRequest);
+    public Document createDocument(@RequestBody DocumentCreateRequest documentCreateRequest) {
+        return documentService.save(documentCreateRequest);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteDocument(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteDocument(@PathVariable String id) {
         documentService.deleteById(id);
         return ResponseEntity.noContent().build();
     }

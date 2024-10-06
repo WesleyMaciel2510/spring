@@ -14,7 +14,6 @@ public class PageUtil {
     public static final String DEFAULT_PAGE_NUMBER = "0";
     public static final String DEFAULT_PAGE_SIZE = "10";
     public static final String DEFAULT_SORT = "id,desc";
-    public static final String SORT_BY_NAME = "nome,asc";
 
     public static Pageable createPageRequest(int pageNumber, int pageSize, String[] sort) {
 
@@ -25,13 +24,11 @@ public class PageUtil {
         List<Order> orders = new ArrayList<>();
 
         if (sort[0].contains(",")) {
-            // sort="field, direction"
             for (String sortOrder : sort) {
                 String[] _sort = sortOrder.split(",");
                 orders.add(new Order(Direction.fromString(_sort[1].trim()), _sort[0].trim()));
             }
         } else {
-            // sort=[field, direction]
             orders.add(new Order(Direction.fromString(sort[1].trim()), sort[0].trim()));
         }
 

@@ -10,11 +10,12 @@ import java.security.spec.InvalidKeySpecException;
 public class PasswordManager {
 
     private static final String HASHING_ALGORITHM = "PBKDF2WithHmacSHA512";
-    private static final String RANDOM_NUMBER_GENERATOR = "SHA1PRNG";
-    private static final int ITERATION_COUNT = 100000;
-    private static final int SALT_LENGTH = 32;
+    private static final String RNG_ALGORITHM = "SHA1PRNG";
+    private static final int HASH_BYTE_SIZE = 512;
+    private static final int SALT_SIZE = 32;
+    private static final int ITERATION_COUNT = 100_000;
 
-    public static String generatePassword(String password) {
+    public static String generatePasswordHash(String password) {
         char[] passwordChars = password.toCharArray();
         try {
             byte[] salt = generateSalt();
@@ -25,8 +26,8 @@ public class PasswordManager {
         }
     }
 
-    public static boolean validatePassword(String password, String hashedPassword) {
-        String[] parts = hashedPassword.split(":");
+    public static boolean validatePassword(String password, String storedPasswordHash) {
+        String[] parts = storedPasswordHash.split(":");
         if (parts.length != 2) {
             return false;
         }
@@ -43,14 +44,14 @@ public class PasswordManager {
     }
 
     private static byte[] generateSalt() throws NoSuchAlgorithmException {
-        SecureRandom secureRandom = SecureRandom.getInstance(RANDOM_NUMBER_GENERATOR);
-        byte[] salt = new byte[SALT_LENGTH];
-        secureRandom.nextBytes(salt);
+        SecureRandom random = SecureRandom.getInstance(RNG_ALGORITHM);
+        byte[] salt = new byte[SALT_SIZE];
+        random.nextBytes(salt);
         return salt;
     }
 
     private static byte[] hashPassword(char[] passwordChars, byte[] salt) throws NoSuchAlgorithmException, InvalidKeySpecException {
-        PBEKeySpec spec = new PBEKeySpec(passwordChars, salt, ITERATION_COUNT, 512);
+        PBEKeySpec spec = new PBEKeySpec(passwordChars, salt, ITERATION_COUNT, HASH_BYTE_SIZE);
         SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(HASHING_ALGORITHM);
         return keyFactory.generateSecret(spec).getEncoded();
     }
@@ -63,9 +64,10 @@ public class PasswordManager {
     }
 
     private static byte[] fromHex(String hex) {
-        byte[] bytes = new byte[hex.length() / 2];
-        for (int i = 0; i < bytes.length; i++) {
-            bytes[i] = (byte) Integer.parseInt(hex.substring(2 * i, 2 * i + 2), 16);
+        int length = hex.length();
+        byte[] bytes = new byte[length / 2];
+        for (int i = 0; i < length; i += 2) {
+            bytes[i / 2] = (byte) Integer.parseInt(hex.substring(i, i + 2), 16);
         }
         return bytes;
     }

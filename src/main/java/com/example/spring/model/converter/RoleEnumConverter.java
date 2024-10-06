@@ -17,11 +17,11 @@ public class RoleEnumConverter implements AttributeConverter<RoleEnum, String> {
     }
 
     @Override
-    public RoleEnum convertToEntityAttribute(String dbData) {
-        if (dbData == null) {
+    public RoleEnum convertToEntityAttribute(String code) {
+        if (code == null) {
             return null;
         }
 
-        return RoleEnum.fromCode(dbData);
+        return RoleEnum.fromCode(code);
     }
 }

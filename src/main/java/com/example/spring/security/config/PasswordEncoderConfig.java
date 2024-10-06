@@ -10,7 +10,7 @@ public class PasswordEncoderConfig {
         return new org.springframework.security.crypto.password.PasswordEncoder() {
             @Override
             public String encode(CharSequence charSequence) {
-                return PasswordManager.generatePassword((String) charSequence);
+                return PasswordManager.generatePasswordHash((String) charSequence);
             }
 
             @Override
