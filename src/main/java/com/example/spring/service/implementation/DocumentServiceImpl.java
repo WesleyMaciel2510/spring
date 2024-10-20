@@ -13,7 +13,6 @@ import java.util.Optional;
 @Service
 public class DocumentServiceImpl implements DocumentService {
 
-    @Autowired
     private DocumentRepository documentRepository;
 
     public List<Document> findAll() {

@@ -2,6 +2,7 @@ package com.example.spring.entity;
 
 import com.example.spring.model.converter.RoleEnumConverter;
 import com.example.spring.model.enums.RoleEnum;
+import com.example.spring.model.enums.SexTypeEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,6 +14,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -23,14 +25,14 @@ import java.util.List;
 @Entity
 @Table(name = "USUARIO")
 public class Usuario implements UserDetails {
+
     @Id
     @Column(name = "USUARIOID", columnDefinition = "VARCHAR(40)")
-    //@UuidGenerator(style = UuidGenerator.Style.AUTO)
     @GeneratedValue
     @UuidGenerator
     private String guid;
 
-    @Column(name = "USERNAME")
+    @Column(name = "USERNAME", nullable = false)
     private String username;
 
     @Column(name = "PASSWORD", nullable = false)
