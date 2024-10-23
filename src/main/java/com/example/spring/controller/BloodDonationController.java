@@ -3,11 +3,18 @@ package com.example.spring.controller;
 import com.example.spring.entity.BloodDonor;
 import com.example.spring.model.requests.IdRequest;
 import com.example.spring.model.requests.bloodDonor.BloodDonorCreateRequest;
+import com.example.spring.model.requests.bloodDonor.BloodDonorSearchRequest;
+import com.example.spring.model.requests.bloodDonor.BloodDonorUpdateRequest;
+import com.example.spring.model.response.DefaultResponse;
 import com.example.spring.model.response.IdResponse;
+import com.example.spring.model.response.PageResponse;
 import com.example.spring.service.BloodDonationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/bloodDonation")
@@ -29,17 +36,17 @@ public class BloodDonationController {
         );
     }
 
-   /* @PostMapping("/search")
+    @PostMapping("/search")
     public ResponseEntity<PageResponse<BloodDonor>> search(@RequestBody BloodDonorSearchRequest request) {
         return ResponseEntity.ok(PageResponse.fromPage(service.search(request)));
-    }*/
+    }
 
     @PostMapping("/findById")
     public ResponseEntity<BloodDonor> findById(@RequestBody IdRequest request) {
         return ResponseEntity.ok(service.findById(request));
     }
 
-   /* @PatchMapping("/update")
+    @PatchMapping("/update")
     public ResponseEntity<IdResponse> update(@RequestBody BloodDonorUpdateRequest request) {
         return ResponseEntity.ok(
                 IdResponse.builder()
@@ -52,14 +59,9 @@ public class BloodDonationController {
     @PatchMapping("/delete")
     public ResponseEntity<DefaultResponse> markAsDeleted(@RequestBody IdRequest request) {
         return ResponseEntity.ok(DefaultResponse.builder().message(service.markAsDeleted(request)).build());
-    }*/
-
-    // === Requirements ================
-    /*@PostMapping("/processCandidates")
-    public ResponseEntity<ProcessedDataResponse> processCandidates(@RequestBody List<CandidateDTO> candidates) {
-        return ResponseEntity.ok(service.processCandidates(candidates));
     }
 
+    // === Requirements ================
     @PostMapping("/candidatesByState")
     public ResponseEntity<Map<String, Long>> candidatesByState() {
         return ResponseEntity.ok(service.getCandidatesByState());
@@ -83,7 +85,7 @@ public class BloodDonationController {
     @PostMapping("/possibleDonorsByBloodType")
     public ResponseEntity<Map<String, Long>> possibleDonorsByBloodType() {
         return ResponseEntity.ok(service.getPossibleDonorsByBloodType());
-    }*/
+    }
 }
 
 
