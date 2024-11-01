@@ -70,7 +70,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
         final Optional<RefreshToken> response = findByToken(request.token());
 
-        if (!response.isPresent()) {
+        if (response.isEmpty()) {
             throw new NotFoundException("Refresh token não encontrado. Por favor realize um novo login.");
         }
 

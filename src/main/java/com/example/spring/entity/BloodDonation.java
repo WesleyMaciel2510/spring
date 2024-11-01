@@ -2,11 +2,10 @@ package com.example.spring.entity;
 
 import com.example.spring.model.enums.SexTypeEnum;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.Period;
 
 @EqualsAndHashCode(callSuper = true)
@@ -16,7 +15,7 @@ import java.time.Period;
 @Data
 @Entity
 @Table(name = "DONOR")
-public class BloodDonor extends InfoBase{
+public class BloodDonation extends InfoBase{
 
     @Column(name = "NAME", nullable = false)
     private String name;
@@ -68,7 +67,7 @@ public class BloodDonor extends InfoBase{
     private String mobile;
 
     @Column(name = "HEIGHT", nullable = false)
-    private Double height; // in meters
+    private Double height;
 
     @Column(name = "WEIGHT", nullable = false)
     private Double weight; // in kilograms

@@ -49,6 +49,8 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public AuthLoginResponse login(AuthenticationRequest request) {
+        System.out.println(" REQUEST = " + request);
+
         if (StringUtils.isBlank(request.getUsername()) || StringUtils.isBlank(request.getPassword())) {
             throw new BadRequestException("Usuário ou senha não informado.");
         }
@@ -59,6 +61,7 @@ public class AuthServiceImpl implements AuthService {
         String jwtToken = authenticate(request, user).getToken();
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
 
+        System.out.println(" ");
         return AuthLoginResponse.builder()
                 .token(jwtToken)
                 .refreshToken(refreshToken.getToken())

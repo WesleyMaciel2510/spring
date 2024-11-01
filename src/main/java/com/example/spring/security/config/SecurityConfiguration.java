@@ -35,6 +35,7 @@ public class SecurityConfiguration {
                                         "/api/auth/password/reset",
                                         "/api/user/**",
                                         "/api/example/**"
+                                        ,"/api/bloodDonation/**"
                                 )
                                 .permitAll()
                                 .anyRequest()

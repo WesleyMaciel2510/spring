@@ -3,15 +3,18 @@ package com.example.spring.controller;
 import com.example.spring.entity.Usuario;
 import com.example.spring.model.requests.IdRequest;
 import com.example.spring.model.requests.user.AppUserCreateRequest;
+import com.example.spring.model.requests.user.AppUserSearchRequest;
 import com.example.spring.model.requests.user.AppUserUpdateRequest;
 import com.example.spring.model.response.DefaultResponse;
 import com.example.spring.model.response.IdResponse;
+import com.example.spring.model.response.PageResponse;
 import com.example.spring.service.AppUserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
 
 @RequiredArgsConstructor
 @RestController
@@ -19,12 +22,6 @@ import org.springframework.web.bind.annotation.*;
 public class AppUserController {
 
     final AppUserService service;
-
-    /*@PostMapping("/search")
-    public ResponseEntity<PageResponse<Usuario>> search(@RequestBody AppUserSearchRequest request) {
-        Page<Usuario> resultPage = service.search(request);
-        return ResponseEntity.ok(PageResponse.fromPage(resultPage));
-    }*/
 
     @PostMapping("/create")
     public ResponseEntity<IdResponse> create(@Valid @RequestBody AppUserCreateRequest request) {

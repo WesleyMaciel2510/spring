@@ -3,6 +3,7 @@ package com.example.spring.service;
 import com.example.spring.entity.Usuario;
 import com.example.spring.model.requests.IdRequest;
 import com.example.spring.model.requests.user.AppUserCreateRequest;
+import com.example.spring.model.requests.user.AppUserSearchRequest;
 import com.example.spring.model.requests.user.AppUserUpdateRequest;
 import org.h2.mvstore.Page;
 
@@ -21,6 +22,5 @@ public interface AppUserService {
 
     String markAsDeleted(IdRequest request);
 
-    //Page<Usuario> search(AppUserSearchRequest request);
 }
 

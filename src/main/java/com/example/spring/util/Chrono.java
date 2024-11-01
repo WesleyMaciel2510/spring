@@ -1,14 +1,10 @@
 package com.example.spring.util;
 
-import com.example.spring.exception.BadRequestException;
-
-import java.sql.Timestamp;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
 import java.time.format.TextStyle;
-import java.time.temporal.ChronoUnit;
 import java.util.Locale;
 
 public abstract class Chrono {
@@ -22,6 +18,15 @@ public abstract class Chrono {
 
     public static LocalDateTime now() {
         return ZonedDateTime.now(ZoneId.of("America/Sao_Paulo")).toLocalDateTime();
+    }
+
+    public static LocalDate parseStringToLocalDate(String dateString) {
+        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        try {
+            return LocalDate.parse(dateString, formatter);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("Incorrect Date Format. Expected format: dd-MM-yyyy");
+        }
     }
 
     public static LocalDateTime parseStringToLocalDateTime(String dateString, String pattern) {
