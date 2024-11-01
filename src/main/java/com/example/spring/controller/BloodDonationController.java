@@ -8,7 +8,10 @@ import com.example.spring.model.requests.bloodDonor.BloodDonorUpdateRequest;
 import com.example.spring.model.response.DefaultResponse;
 import com.example.spring.model.response.IdResponse;
 import com.example.spring.model.response.PageResponse;
+import com.example.spring.model.response.ProcessedDataResponse;
+import com.example.spring.openApi.BloodDonationControllerOpenAPI;
 import com.example.spring.service.BloodDonationService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +21,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/bloodDonation")
+@Tag(name = "Blood Donation", description = "Serviços relacionados a doação de sangue")
 public class BloodDonationController implements BloodDonationControllerOpenAPI {
 
     private final BloodDonationService service;
@@ -37,7 +41,7 @@ public class BloodDonationController implements BloodDonationControllerOpenAPI {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<PageResponse<BloodDonor>> search(@RequestBody BloodDonorSearchRequest request) {
+    public ResponseEntity<PageResponse<BloodDonation>> search(@RequestBody BloodDonorSearchRequest request) {
         return ResponseEntity.ok(PageResponse.fromPage(service.search(request)));
     }
 
@@ -61,10 +65,17 @@ public class BloodDonationController implements BloodDonationControllerOpenAPI {
         return ResponseEntity.ok(DefaultResponse.builder().message(service.markAsDeleted(request)).build());
     }
 
-    // === Requirements ================
-    @PostMapping("/candidatesByState")
-    public ResponseEntity<Map<String, Long>> candidatesByState() {
-        return ResponseEntity.ok(service.getCandidatesByState());
+    @PostMapping("/processCandidates")
+    public ResponseEntity<ProcessedDataResponse> processCandidates(
+            @RequestBody List<BloodDonation> candidates,
+            @RequestParam String state) {
+        ProcessedDataResponse response = service.processCandidates(candidates, state);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/candidatesByState")
+    public ResponseEntity<Map<String, Long>> candidatesByState(@RequestParam String state) {
+        return ResponseEntity.ok(service.getCandidatesByState(state));
     }
 
     @GetMapping("/averageImcByAgeRange")
@@ -87,5 +98,6 @@ public class BloodDonationController implements BloodDonationControllerOpenAPI {
         return ResponseEntity.ok(service.getPossibleDonorsByBloodType());
     }
 }
+
 
 
